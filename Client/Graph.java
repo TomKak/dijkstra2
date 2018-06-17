@@ -71,6 +71,7 @@ public class Graph
             System.out.println("Error! An exception was thrown ...\n" + e.getMessage());
             throw e;
         }
+        System.out.println("End of the 'fromFile' static Graph method");
     }
 
     void printAdjacencyMatrix()

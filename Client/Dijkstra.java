@@ -30,6 +30,7 @@ public class Dijkstra {
             workerServers[i] = (IServer) reg.lookup("server");
         }
         executor = Executors.newFixedThreadPool(serversCount);
+        System.out.println("End of the 'Dijkstra' constructor.");
     }
     
     private Graph myTestcase;
@@ -144,6 +145,7 @@ public class Dijkstra {
         System.out.println("\b\b]");
         
         executor.shutdown();
+        System.out.println("End of the 'run' Dijkstra method.");
     }
     
     private boolean connectionNodesExists(int fromNode, int toNode) {
