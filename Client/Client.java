@@ -24,7 +24,7 @@ public class Client
         {
             System.out.println("You should enter the following arguments:\n" +
                     " 'testcaseIssue' & 'hostName' &  more then one 'serverPort'\n" +
-                    "For example: make runclient Testcase=4 RegistryIP=127.0.0.1 Ports=\"9997 9998\" \n");
+                    "For example: make runclient Testcase=0 RegistryIP=127.0.0.1 Ports=\"0001 0002\" \n");
             return;
         }
 

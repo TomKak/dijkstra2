@@ -19,7 +19,7 @@ public class Server extends UnicastRemoteObject implements IServer{
         if (args.length < 2) {
             System.out.println("You should enter the following arguments:\n" +
                     "'hostName' &  more then one 'serverPort'\n" +
-                    "For example: make runserver RegistryIP=127.0.0.1 Ports=\"9997 9998\"\n");
+                    "For example: make runserver RegistryIP=127.0.0.1 Ports=\"0001 0002\"\n");
             return;
         }
 

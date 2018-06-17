@@ -74,7 +74,7 @@ public class Graph
 
     void printAdjacencyMatrix()
     {
-        System.out.println("AdjacencyMatrix:\n");
+        System.out.println("\nAdjacencyMatrix:");
         for (int i = 0; i < nodesCount; ++i) {
             for (int j = 0; j < nodesCount; ++j) {
                 if (weights[i][j] != noConnection)
