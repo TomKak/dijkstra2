@@ -32,7 +32,7 @@ public class Server extends UnicastRemoteObject implements IServer{
                 String port = args[i];
                 System.setProperty("java.rmi.server.hostname", hostName);
                 Registry reg = LocateRegistry.createRegistry(Integer.parseInt(port));
-                reg.rebind("server", server);//"Server", server
+                reg.rebind("Server", server);//"Server", server
                 System.out.println("Server started on " + hostName + ":" + port);
             }
             catch (Exception e) {

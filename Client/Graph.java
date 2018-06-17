@@ -37,6 +37,7 @@ public class Graph
 
     public static Graph fromFile(String filename) throws Exception
     {
+        System.out.println("The beginning of the 'fromFile' static Graph method.");
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String readVerticesCount = br.readLine();
             //validator of the number of vertices in the adjacency matrix,

@@ -16,6 +16,7 @@ import Shared.*;
 
 public class Dijkstra {
     public Dijkstra(Graph myTestCase, String hostName, String[] ports) throws Exception {
+        System.out.println("The beginning of the 'Dijkstra' constructor.");
         serversCount = ports.length;
         workerServers = new IServer[serversCount];
         workerNodesCount = new int[serversCount];
@@ -40,6 +41,7 @@ public class Dijkstra {
     private HashSet<Integer> nodesVisited;
     
     public void run() throws InterruptedException, RemoteException {
+        System.out.println("The beginning of the 'run' method.");
         final int[][] weights = myTestcase.getWeights();
         //String[] nodesNames = myTestcase.getNodesNames();
         int nodesCount = myTestcase.getNodesCount();
@@ -148,6 +150,7 @@ public class Dijkstra {
         return this.myTestcase.getWeights()[fromNode][toNode] != -1;
     }
     private int[] calculateWorkerNodeRanges(int workerServerId) {
+        System.out.println("The beginning of the 'calculateWorkerNodeRanges' method.");
         int nodesCount = myTestcase.getNodesCount();
         int[] results = new int[2];
         
