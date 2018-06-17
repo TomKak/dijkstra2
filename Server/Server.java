@@ -27,10 +27,12 @@ public class Server extends UnicastRemoteObject implements IServer{
 
         for(int i=1; i<args.length; ++i) {
             try {
+                Server server = new Server();
+
                 String port = args[i];
                 System.setProperty("java.rmi.server.hostname", hostName);
                 Registry reg = LocateRegistry.createRegistry(Integer.parseInt(port));
-                reg.rebind("server", new Server());
+                reg.rebind("server", server);//"Server", server
                 System.out.println("Server started on " + hostName + ":" + port);
             }
             catch (Exception e) {
@@ -65,6 +67,8 @@ public class Server extends UnicastRemoteObject implements IServer{
     }
     
     public int[] calculateDistances(Integer currentNode, int distToCurrentNode) throws RemoteException {
+        System.out.println("The beginning of the 'calculateDistances' method");
+
         distances[currentNode] = distToCurrentNode;
         
         for(int node=this.fromNode; node<=this.toNode; ++node) {
@@ -89,7 +93,20 @@ public class Server extends UnicastRemoteObject implements IServer{
         }
         
         visitedNodes.add(currentNode);
+        System.out.println("End of the 'calculateDistances' method");
         return this.getWorkerDistancesPart();
+    }
+
+    public int[] getWorkerPrevNodesPart() throws RemoteException {
+        return this.getWorkerMatrixPart(this.prevNodes);
+    }
+
+    private boolean connectionNodesExists(int fromNode, int toNode) {
+        return this.weights[fromNode][toNode] != -1;
+    }
+
+    private int[] getWorkerDistancesPart() {
+        return this.getWorkerMatrixPart(this.distances);
     }
 
     private int[] getWorkerMatrixPart(int[] array) {
@@ -98,17 +115,4 @@ public class Server extends UnicastRemoteObject implements IServer{
             result[i-this.fromNode] = array[i];
         return result;
     }
-
-    public int[] getWorkerPrevNodesPart() throws RemoteException {
-        return this.getWorkerMatrixPart(this.prevNodes);
-    }
-
-    private int[] getWorkerDistancesPart() {
-        return this.getWorkerMatrixPart(this.distances);
-    }
-
-    private boolean connectionNodesExists(int fromNode, int toNode) {
-        return this.weights[fromNode][toNode] != -1;
-    }
-
 }
