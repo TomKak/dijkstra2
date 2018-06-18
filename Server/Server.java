@@ -27,13 +27,16 @@ public class Server extends UnicastRemoteObject implements IServer{
 
         for(int i=1; i<args.length; ++i) {
             try {
-                Server server = new Server();
+                Server obj = new Server();
+                //ServerInterface  stub = (ServerInterface)UnicastRemoteObject.exportObject(obj, 0);
 
                 String port = args[i];
                 System.setProperty("java.rmi.server.hostname", hostName);
                 Registry reg = LocateRegistry.createRegistry(Integer.parseInt(port));
-                reg.rebind("Server", server);//"Server", server
+                reg.rebind("server", obj);//Rebinds the specified name to a new remote object.
                 System.out.println("Server started on " + hostName + ":" + port);
+               
+                UnicastRemoteObject.unexportObject(obj,false);
             }
             catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -41,6 +44,7 @@ public class Server extends UnicastRemoteObject implements IServer{
         }
 
         System.out.println("End of main function in class 'Server'.");
+        //System.exit(0);
     }
 
     private int[][] weights;

@@ -26,8 +26,17 @@ public class Dijkstra {
         this.myTestcase = myTestCase;
         
         for(int i = 0; i< serversCount; ++i) {
+           
+            //System.setProperty("java.rmi.server.hostname", hostName);
+
             Registry reg = LocateRegistry.getRegistry(hostName, Integer.parseInt(ports[i]));
-            workerServers[i] = (IServer) reg.lookup("server");
+            //Registry reg = LocateRegistry.getRegistry(Integer.parseInt(serverPorts[i]));
+           
+            System.out.println("dubug 1");
+            workerServers[i] = (IServer) reg.lookup("server");//TODO: this such exception
+            //local host 127.0.0.1
+            //taurus host 127.0.1.1
+            System.out.println("dubug 2");
         }
         executor = Executors.newFixedThreadPool(serversCount);
         System.out.println("End of the 'Dijkstra' constructor.");
