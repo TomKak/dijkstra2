@@ -18,3 +18,6 @@ make runclient TESTCASE=0 REGISTRY_IP=127.0.1.1 PORTS="1132 1133 1134"
 To clean by: 'make clean'
 
 "# dijkstra2"
+
+Problem:
+https://stackoverflow.com/questions/15685686/java-rmi-connectexception-connection-refused-to-host-127-0-1-1
