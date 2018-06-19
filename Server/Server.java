@@ -16,13 +16,15 @@ public class Server extends UnicastRemoteObject implements IServer{
 
     public static void main(String args[]) throws Exception {
         System.out.println("Server started...");
+        
+  /*      
         if (args.length < 2) {
             System.out.println("You should enter the following arguments:\n" +
                     "'hostName' &  more then one 'serverPort'\n" +
                     "For example: make runserver RegistryIP=127.0.0.1 Ports=\"0001 0002\"\n");
             return;
         }
-
+*/
         String hostName = args[0];
 
         for(int i=1; i<args.length; ++i) {
