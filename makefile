@@ -3,8 +3,7 @@
 all: compile
         @echo "Build completed"
 
-compile:
-        Client/*.java Server/*.java
+compile: Client/*.java Server/*.java
         javac Client/*.java
         javac Server/*.java
 
