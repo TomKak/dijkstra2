@@ -36,16 +36,19 @@ public class Dijkstra {
             
             Registry reg = LocateRegistry.getRegistry(hostName, Integer.parseInt(ports[i]));
             
-            //System.out.println("dubug 1");
-            workerServers[i] = (IServer) reg.lookup("server" + String.valueOf(portsCount[i]));
+
+            workerServers[i] = (IServer) reg.lookup("server");
+            //workerServers[i] = (IServer) reg.lookup("server" + String.valueOf(portsCount[i]));
+           
             //Returns a reference, a stub, for the remote object associated with the specified name.
             //local host 127.0.0.1
             //taurus host 127.0.1.1
-            //System.out.println("dubug 2");
         }
         //Creates a thread pool that reuses a fixed number of threads operating off a shared unbounded queue
-        //executor = Executors.newFixedThreadPool(serversCount);
+       
         executor = Executors.newFixedThreadPool(1);
+        //executor = Executors.newFixedThreadPool(serversCount);
+       
     }
     
     //declarations

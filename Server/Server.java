@@ -43,7 +43,9 @@ public class Server extends UnicastRemoteObject implements IServer{
                 // System.setProperty("java.rmi.server.codebase");
 
                 Registry reg = LocateRegistry.createRegistry(Integer.parseInt(port));
-                reg.rebind("server" +  String.valueOf(portsCount[i-1]), obj);//stub //Rebinds the specified name to a new remote object.
+                
+                reg.rebind("server", obj);
+                //reg.rebind("server" +  String.valueOf(portsCount[i-1]), obj);//stub //Rebinds the specified name to a new remote object.
                 System.out.println("Server started on " + hostName + ":" + port);
                
                 UnicastRemoteObject.unexportObject(obj,false);
