@@ -10,16 +10,16 @@ import java.io.IOException;
 
 public class Graph
 {
+    private int[][] G;
     private int nodesCount;
     private String[] nodesNames;
-    private int[][] weights;
     static final int noConnection = -1;
     final static String separator = ",";
 
     private Graph(int verticesCount)
     {
         nodesNames = new String[verticesCount];
-        weights = new int[verticesCount][verticesCount];
+        G = new int[verticesCount][verticesCount];
         this.nodesCount = verticesCount;
     }
 
@@ -28,7 +28,7 @@ public class Graph
     }
 
     int[][] getWeights() {
-        return weights;
+        return G;
     }
 
     String[] getNodesNames() {
@@ -53,9 +53,9 @@ public class Graph
                 for (int j = 0; j < verticesCount; ++j) {
                     String numstr = cases[j].trim();
                     if (numstr.contains("-"))
-                        graph.weights[i][j] = noConnection;
+                        graph.G[i][j] = noConnection;
                     else
-                        graph.weights[i][j] = Integer.parseInt(numstr);
+                        graph.G[i][j] = Integer.parseInt(numstr);
                 }
             }
 
@@ -79,8 +79,8 @@ public class Graph
         System.out.println("\nAdjacencyMatrix:");
         for (int i = 0; i < nodesCount; ++i) {
             for (int j = 0; j < nodesCount; ++j) {
-                if (weights[i][j] != noConnection)
-                    System.out.print(weights[i][j] + " ");
+                if (G[i][j] != noConnection)
+                    System.out.print(G[i][j] + " ");
                 else
                     System.out.print("-" + " ");
             }

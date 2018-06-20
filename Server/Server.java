@@ -58,33 +58,33 @@ public class Server extends UnicastRemoteObject implements IServer{
         //System.exit(0);
     }
 
-    private int[][] weights;
+    private int[][] G;
     private int prevVertex;
     private int nextVertex;
     private int workerId;
     private int nodesCount;
-    private int[] distances;
-    private int[] prevNodes;
+    private int[] dist;
+    private int[] pred;
     private HashSet<Integer> visitedNodes;
     
-    public void initialData(int workerId, int nodesCount, int[] ranges, int[][] weights) throws RemoteException {
-        this.weights = weights;
+    public void initialData(int workerId, int nodesCount, int[] ranges, int[][] G) throws RemoteException {
+        this.G = G;
         this.workerId = workerId;
         this.prevVertex = ranges[0];
         this.nextVertex = ranges[1];
         this.nodesCount = nodesCount;
         this.visitedNodes = new HashSet<>();
-        this.distances = new int[nodesCount];
-        this.prevNodes = new int[nodesCount];
+        this.dist = new int[nodesCount];
+        this.pred = new int[nodesCount];
         
         for(int i=0; i<nodesCount; ++i)
-            this.distances[i] = this.prevNodes[i] = Integer.MAX_VALUE;
+            this.dist[i] = this.pred[i] = Integer.MAX_VALUE;
     }
     
     public int[] calculateDistances(Integer currentNode, int distToCurrentNode) throws RemoteException {
         System.out.println("The beginning of the 'calculateDistances' method");
 
-        distances[currentNode] = distToCurrentNode;
+        dist[currentNode] = distToCurrentNode;
         
         for(int node=this.prevVertex; node<=this.nextVertex; ++node) {
             if (visitedNodes.contains(node)) {
@@ -93,15 +93,15 @@ public class Server extends UnicastRemoteObject implements IServer{
             }
             
             if (connectionNodesExists(currentNode, node)) {
-                int nodeDistance = this.weights[currentNode][node];
-                int totalDistToNode = distances[currentNode] + nodeDistance;
+                int nodeDistance = this.G[currentNode][node];
+                int totalDistToNode = dist[currentNode] + nodeDistance;
                 
                 System.out.println("Case:\n " +
                         "Worker '" + workerId + "', node '" + currentNode + "' is connected to " + node + "\n" +
                         " distance = " + nodeDistance + " & totalDistToNode = " + totalDistToNode + ".");
-                if (totalDistToNode < distances[node]) {
-                    distances[node] = totalDistToNode;
-                    prevNodes[node] = currentNode;
+                if (totalDistToNode < dist[node]) {
+                    dist[node] = totalDistToNode;
+                    pred[node] = currentNode;
                     System.out.println("The total cost of distance to this vertex is smaller. We replace the value.");
                 }
             }
@@ -113,15 +113,15 @@ public class Server extends UnicastRemoteObject implements IServer{
     }
 
     public int[] getWorkerPrevNodesPart() throws RemoteException {
-        return this.getWorkerMatrixPart(this.prevNodes);
+        return this.getWorkerMatrixPart(this.prevd);
     }
 
     private boolean connectionNodesExists(int prevVertex, int nextVertex) {
-        return this.weights[prevVertex][nextVertex] != -1;
+        return this.G[prevVertex][nextVertex] != -1;
     }
 
     private int[] getWorkerDistancesPart() {
-        return this.getWorkerMatrixPart(this.distances);
+        return this.getWorkerMatrixPart(this.dist);
     }
 
     private int[] getWorkerMatrixPart(int[] array) {
