@@ -33,11 +33,12 @@ public class Dijkstra {
             //System.setProperty("java.rmi.server.hostname", hostName);
             //This is item A.1 in the RMI FAQ. 
             //System.setProperty("java.rmi.activation.port");
-            
+            System.out.println("debug 1");
             Registry reg = LocateRegistry.getRegistry(hostName, Integer.parseInt(ports[i]));
             
-
+            System.out.println("debug 2");
             workerServers[i] = (IServer) reg.lookup("server");
+            System.out.println("debug 3");
             //workerServers[i] = (IServer) reg.lookup("server" + String.valueOf(portsCount[i]));
            
             //Returns a reference, a stub, for the remote object associated with the specified name.
@@ -48,7 +49,7 @@ public class Dijkstra {
        
         executor = Executors.newFixedThreadPool(1);
         //executor = Executors.newFixedThreadPool(serversCount);
-       
+       System.out.println("debug 4");
     }
     
     //declarations

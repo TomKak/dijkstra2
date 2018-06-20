@@ -8,7 +8,7 @@ compile: Client/*.java Server/*.java
         javac Server/*.java
 
 server:
-        #java -jar -Djava.rmi.server.hostname=${REGISTRY_IP} Server.Server/jar
+        #java -jar -Djava.rmi.server.hostname=${hostIP} Server.Server/jar
         java Server.Server ${hostIP} ${Ports}
 
 client:

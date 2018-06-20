@@ -16,16 +16,16 @@ next:
 
 To run server by: 
 
-make server hostIP=127.0.0.1 Ports="1132 1133 1334" 
+make server hostIP=127.0.0.1 Ports="1132 1133 1134" 
 or
 make server hostIP=127.0.1.1 Ports="1132 1133 1134"
 etc...
 
 To run client by: 
 
-make client Testcase=0 host=127.0.0.1 Ports="1132 1133 1334" 
+make client Testcase=0 host=127.0.0.1 Ports="1134" 
 or
-make client Testcase=0  host=127.0.1.1 Ports="1132 1133 1134"
+make client Testcase=0  host=127.0.1.1 Ports="1134"
 etc...
 
 To clean by: 'make clean'
