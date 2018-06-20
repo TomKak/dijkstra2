@@ -83,7 +83,7 @@ public class Dijkstra {
                 try {
                     int[] nodeRanges = calculateWorkerNodeRanges(workerId);
                     int prevVertex = nodeRanges[0];
-                    int netvVertex = nodeRanges[1];
+                    int nextVertex = nodeRanges[1];
                     workerNodesCount[workerId] = nextVertex - prevVertex + 1;
                     workerFromNodes[workerId] = prevVertex;
                     workerServers[workerId].initialData(workerId, nodesCount, nodeRanges, G);
@@ -144,7 +144,7 @@ public class Dijkstra {
 
         System.out.println("The result of the dijkstr algorithm implementation:\n");
         System.out.println("Started from node index = " + initialNode);
-        System.out.print("\nDistances = [");
+        System.out.print("\nDist = [");
         for(int node=0; node<nodesCount; ++node) {
             if (dist[node] == 9999)
                 System.out.print("-, ");
@@ -153,12 +153,12 @@ public class Dijkstra {
         }
         System.out.println("\b\b]");
         
-        System.out.print("PrevNodes (X means initialNode) = [");
+        System.out.print("Pred (X means initialNode) = [");
         for(int node=0; node<nodesCount; ++node) {
             if (node == initialNode)
                 System.out.print("X, ");
             else
-                System.out.print(prevNodes[node] + ", ");
+                System.out.print(pred[node] + ", ");
         }
         System.out.println("\b\b]\n");
         

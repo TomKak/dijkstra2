@@ -113,7 +113,7 @@ public class Server extends UnicastRemoteObject implements IServer{
     }
 
     public int[] getWorkerPrevNodesPart() throws RemoteException {
-        return this.getWorkerMatrixPart(this.prevd);
+        return this.getWorkerMatrixPart(this.pred);
     }
 
     private boolean connectionNodesExists(int prevVertex, int nextVertex) {
