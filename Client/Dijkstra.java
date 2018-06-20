@@ -26,10 +26,10 @@ public class Dijkstra {
         visited = new HashSet<>();
         
         this.myTestcase = myTestCase;
-        int[] portsCount = new int[serversCount];
+        //int[] portsCount = new int[serversCount];
              
         for(int i = 0; i< serversCount; ++i) {
-           portsCount[i] = i+1;
+          // portsCount[i] = i+1;
             //System.setProperty("java.rmi.server.hostname", hostName);
             //This is item A.1 in the RMI FAQ. 
             //System.setProperty("java.rmi.activation.port");
