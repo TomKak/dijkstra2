@@ -20,15 +20,15 @@ public class Client
                 "The following number of arguments have been entered: " + args.length);
 
         //In the same way as in the example from lesson 11. Java RMI / JNI
-///*
-        if (args.length < 3)
-        {
-            System.out.println("\nYou should enter the following arguments:\n" +
-                    " 'testcaseIssue' & 'hostName' &  more then one 'serverPort'\n" +
-                    "For example: make runclient Testcase=0 RegistryIP=127.0.0.1 Ports=\"0001 0002\" \n");
-            return;
-        }
-///*/
+
+     //   if (args.length < 3)
+     //  {
+     //     System.out.println("\nYou should enter the following arguments:\n" +
+     //             " 'testcaseIssue' & 'hostName' &  more then one 'serverPort'\n" +
+     //            "For example: make runclient Testcase=0 hostIP=127.0.0.1 Ports=\"0001 0002\" \n");
+     //      return;
+     //   }
+
         String testcaseIssue = args[0];
         String hostName = args[1];
         String[] ports = new String[args.length - 2];
