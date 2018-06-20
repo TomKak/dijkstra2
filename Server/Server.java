@@ -26,7 +26,7 @@ public class Server extends UnicastRemoteObject implements IServer{
         }
 
         String hostName = args[0];
-        private int[] portsCount = new int[args.length-1]
+        int[] portsCount = new int[args.length-1];
 
         for(int i=1; i<args.length; ++i) {
             try {
@@ -43,7 +43,7 @@ public class Server extends UnicastRemoteObject implements IServer{
                 // System.setProperty("java.rmi.server.codebase");
 
                 Registry reg = LocateRegistry.createRegistry(Integer.parseInt(port));
-                reg.rebind("server" + i.toString(), obj);//stub //Rebinds the specified name to a new remote object.
+                reg.rebind("server" +  String.valueOf(portsCount[i-1]), obj);//stub //Rebinds the specified name to a new remote object.
                 System.out.println("Server started on " + hostName + ":" + port);
                
                 UnicastRemoteObject.unexportObject(obj,false);

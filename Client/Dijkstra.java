@@ -26,7 +26,7 @@ public class Dijkstra {
         visited = new HashSet<>();
         
         this.myTestcase = myTestCase;
-        private int[] portsCount = new int[args.length-1]
+        int[] portsCount = new int[serversCount];
              
         for(int i = 0; i< serversCount; ++i) {
            portsCount[i] = i+1;
@@ -37,7 +37,7 @@ public class Dijkstra {
             Registry reg = LocateRegistry.getRegistry(hostName, Integer.parseInt(ports[i]));
             
             //System.out.println("dubug 1");
-            workerServers[i] = (IServer) reg.lookup("server" + i.toString());
+            workerServers[i] = (IServer) reg.lookup("server" + String.valueOf(portsCount[i]));
             //Returns a reference, a stub, for the remote object associated with the specified name.
             //local host 127.0.0.1
             //taurus host 127.0.1.1
