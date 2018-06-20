@@ -26,21 +26,21 @@ public class Dijkstra {
         visited = new HashSet<>();
         
         this.myTestcase = myTestCase;
-        //int[] portsCount = new int[serversCount];
+        int[] portsCount = new int[serversCount];
              
         for(int i = 0; i< serversCount; ++i) {
-          // portsCount[i] = i+1;
+           portsCount[i] = i+1;
             //System.setProperty("java.rmi.server.hostname", hostName);
             //This is item A.1 in the RMI FAQ. 
             //System.setProperty("java.rmi.activation.port");
-            System.out.println("debug 1");
-            Registry reg = LocateRegistry.getRegistry(hostName, Integer.parseInt(ports[i]));
             
-            System.out.println("debug 2");
+            //System.out.println("debug 1");
+            Registry reg = LocateRegistry.getRegistry(hostName, Integer.parseInt(ports[i]));
+            //System.out.println("debug 2");
             workerServers[i] = (IServer) reg.lookup("server");
-            System.out.println("debug 3");
             //workerServers[i] = (IServer) reg.lookup("server" + String.valueOf(portsCount[i]));
-           
+            System.out.println("debug 3");
+            
             //Returns a reference, a stub, for the remote object associated with the specified name.
             //local host 127.0.0.1
             //taurus host 127.0.1.1
