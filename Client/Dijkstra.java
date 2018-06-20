@@ -1,84 +1,92 @@
 package Client;
 
+import java.rmi.*;
+import java.util.*;
+import java.util.concurrent.*;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.concurrent.*;
-import java.util.*;
-import java.rmi.*;
+import java.rmi.registry.LocateRegistry;
 
 import Shared.*;
 
 public class Dijkstra {
+    
+    //constructor
     public Dijkstra(Graph myTestCase, String hostName, String[] ports) throws Exception {
-        System.out.println("The beginning of the 'Dijkstra' constructor.");
+        //declarations
         serversCount = ports.length;
-        workerServers = new IServer[serversCount];
         workerNodesCount = new int[serversCount];
         workerFromNodes = new int[serversCount];
-        nodesVisited = new HashSet<>();
+        workerServers = new IServer[serversCount];
+        visited = new HashSet<>();
         
         this.myTestcase = myTestCase;
-        
+        private int[] portsCount = new int[args.length-1]
+             
         for(int i = 0; i< serversCount; ++i) {
-           
+           portsCount[i] = i+1;
             //System.setProperty("java.rmi.server.hostname", hostName);
-
+            //This is item A.1 in the RMI FAQ. 
+            //System.setProperty("java.rmi.activation.port");
+            
             Registry reg = LocateRegistry.getRegistry(hostName, Integer.parseInt(ports[i]));
-            //Registry reg = LocateRegistry.getRegistry(Integer.parseInt(serverPorts[i]));
-           
-            System.out.println("dubug 1");
-            workerServers[i] = (IServer) reg.lookup("server");//TODO: this such exception
+            
+            //System.out.println("dubug 1");
+            workerServers[i] = (IServer) reg.lookup("server" + i.toString());
+            //Returns a reference, a stub, for the remote object associated with the specified name.
             //local host 127.0.0.1
             //taurus host 127.0.1.1
-            System.out.println("dubug 2");
+            //System.out.println("dubug 2");
         }
-        executor = Executors.newFixedThreadPool(serversCount);
-        System.out.println("End of the 'Dijkstra' constructor.");
+        //Creates a thread pool that reuses a fixed number of threads operating off a shared unbounded queue
+        //executor = Executors.newFixedThreadPool(serversCount);
+        executor = Executors.newFixedThreadPool(1);
     }
     
+    //declarations
+    private int[] workerNodesCount;
+    private int[] workerFromNodes;
+    private IServer[] workerServers;
     private Graph myTestcase;
     private int serversCount;
     private ExecutorService executor;
-    private IServer[] workerServers;
-    private int[] workerNodesCount;
-    private int[] workerFromNodes;
-    private HashSet<Integer> nodesVisited;
+    private HashSet<Integer> visited;// nodes already visited
     
     public void run() throws InterruptedException, RemoteException {
         System.out.println("The beginning of the 'run' method.");
-        final int[][] weights = myTestcase.getWeights();
-        //String[] nodesNames = myTestcase.getNodesNames();
+        
+        final int[][] G = myTestcase.getWeights();// maximum size of the graph
         int nodesCount = myTestcase.getNodesCount();
         
-        int[] distances = new int[nodesCount];
-        int[] prevNodes = new int[nodesCount];
+        int[] dist = new int[nodesCount];// distance, cost to reach the node from start point
+        int[] pred = new int[nodesCount];// predecessors we came to this node from
         
         for(int i=0; i<nodesCount; ++i)
-            distances[i] = prevNodes[i] = Integer.MAX_VALUE;
+            dist[i] = pred[i] = 9999;// big enough number, bigger than any possible pred
         
-        int initialNode = 0; // TODO
+        int initialNode = 0; 
         PriorityQueue<Integer> nodesToVisitQ = new PriorityQueue<>();
         nodesToVisitQ.add(initialNode);
 
         System.out.println("Sending weights to workers...");
         List<Callable<Object>> calls = new ArrayList<>();
+        
         for(int i = 0; i< serversCount; ++i) {
             final int workerId = i;
             calls.add(Executors.callable(() -> {
                 System.out.println("Sending weights to worker " + workerId);
                 try {
                     int[] nodeRanges = calculateWorkerNodeRanges(workerId);
-                    int fromNode = nodeRanges[0];
-                    int toNode = nodeRanges[1];
-                    workerNodesCount[workerId] = toNode - fromNode + 1;
-                    workerFromNodes[workerId] = fromNode;
-                    workerServers[workerId].initialData(workerId, nodesCount, nodeRanges, weights);
+                    int prevVertex = nodeRanges[0];
+                    int netvVertex = nodeRanges[1];
+                    workerNodesCount[workerId] = nextVertex - prevVertex + 1;
+                    workerFromNodes[workerId] = prevVertex;
+                    workerServers[workerId].initialData(workerId, nodesCount, nodeRanges, G);
                 }
                 catch(RemoteException e) {
                     e.printStackTrace();
@@ -87,8 +95,8 @@ public class Dijkstra {
         }
         executor.invokeAll(calls);
 
-        distances[initialNode] = 0;
-        nodesVisited.add(initialNode);
+        dist[initialNode] = 0;
+        visited.add(initialNode);
         
         while(nodesToVisitQ.size() != 0) {
             Integer currentNode = nodesToVisitQ.poll();
@@ -100,8 +108,8 @@ public class Dijkstra {
                 calls.add(Executors.callable(() -> {
                     System.out.println("Sending weight values to worker '" + workerId+"'.");
                     try {
-                        int[] workerDistances = workerServers[workerId].calculateDistances(currentNode, distances[currentNode]);
-                        System.arraycopy(workerDistances, 0, distances, workerFromNodes[workerId], workerNodesCount[workerId]);
+                        int[] workerDistances = workerServers[workerId].calculateDistances(currentNode, dist[currentNode]);
+                        System.arraycopy(workerDistances, 0, dist, workerFromNodes[workerId], workerNodesCount[workerId]);
                     }
                     catch(RemoteException e) {
                         e.printStackTrace();
@@ -111,20 +119,21 @@ public class Dijkstra {
             executor.invokeAll(calls);
             
             for(int node=0; node<nodesCount; ++node)
-                if (nodesVisited.contains(node) == false && connectionNodesExists(currentNode, node)) {
+                if (visited.contains(node) == false && connectionNodesExists(currentNode, node)) {
                     nodesToVisitQ.add(node);
-                    nodesVisited.add(node);
+                    visited.add(node);
                 }
         }
         
         calls = new ArrayList<>();
+        
         for(int i = 0; i< serversCount; ++i) {
             final int workerId = i;
             calls.add(Executors.callable(() -> {
                 try {
                     int[] workerPrevNodes = workerServers[workerId].getWorkerPrevNodesPart();
-                    System.out.println(workerId + ", fromNode=" + workerFromNodes[workerId] + ", count=" + workerNodesCount[workerId]);
-                    System.arraycopy(workerPrevNodes, 0, prevNodes, workerFromNodes[workerId], workerNodesCount[workerId]);
+                    System.out.println(workerId + ", prevVertex =" + workerFromNodes[workerId] + ", count=" + workerNodesCount[workerId]);
+                    System.arraycopy(workerPrevNodes, 0, pred, workerFromNodes[workerId], workerNodesCount[workerId]);
                 }
                 catch(Exception e) {
                     e.printStackTrace();
@@ -135,12 +144,12 @@ public class Dijkstra {
 
         System.out.println("The result of the dijkstr algorithm implementation:\n");
         System.out.println("Started from node index = " + initialNode);
-        System.out.print("Distances = [");
+        System.out.print("\nDistances = [");
         for(int node=0; node<nodesCount; ++node) {
-            if (distances[node] == Integer.MAX_VALUE)
+            if (dist[node] == 9999)
                 System.out.print("-, ");
             else
-                System.out.print(distances[node] + ", ");
+                System.out.print(dist[node] + ", ");
         }
         System.out.println("\b\b]");
         
@@ -151,37 +160,40 @@ public class Dijkstra {
             else
                 System.out.print(prevNodes[node] + ", ");
         }
-        System.out.println("\b\b]");
+        System.out.println("\b\b]\n");
         
         executor.shutdown();
         System.out.println("End of the 'run' Dijkstra method.");
     }
     
-    private boolean connectionNodesExists(int fromNode, int toNode) {
-        return this.myTestcase.getWeights()[fromNode][toNode] != -1;
+    private boolean connectionNodesExists(int prevVertex, int nextVertex) {
+        return this.myTestcase.getWeights()[prevVertex][nextVertex] != -1;
     }
-    private int[] calculateWorkerNodeRanges(int workerServerId) {
-        System.out.println("The beginning of the 'calculateWorkerNodeRanges' method.");
-        int nodesCount = myTestcase.getNodesCount();
-        int[] results = new int[2];
+    
+    private int[] calculateWorkerNodeRanges(int workerServerId){
         
-        int fromNode = (nodesCount / serversCount) * workerServerId;
-        int toNode = (nodesCount / serversCount) * (workerServerId + 1) - 1;
+        int nodesCount = myTestcase.getNodesCount();
+        int[] boundWeights = new int[2];
+        
+        int prevVertex = workerServerId * nodesCount / serversCount ;
+        int nextVertex = (workerServerId + 1) * nodesCount / serversCount - 1;
         
         int restNodes = nodesCount % serversCount;
         
-        if (workerServerId < restNodes) {
-            fromNode += workerServerId;
-            toNode += workerServerId + 1;
+        if (workerServerId < restNodes)
+        {
+            prevVertex += workerServerId;
+            nextVertex += workerServerId + 1;
         }
-        else {
-            fromNode += restNodes;
-            toNode += restNodes;
+        else
+        {
+            prevVertex += restNodes;
+            nextVertex += restNodes;
         }
         
-        results[0] = fromNode;
-        results[1] = toNode;
+        boundWeights[0] = prevVertex;
+        boundWeights[1] = nextVertex;
         
-        return results;
+        return boundWeights;
     }
 }

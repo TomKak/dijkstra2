@@ -9,11 +9,11 @@ compile: Client/*.java Server/*.java
 
 server:
         #java -jar -Djava.rmi.server.hostname=${REGISTRY_IP} Server.Server/jar
-        java Server.Server ${RegistryIP} ${Ports}
+        java Server.Server ${hostIP} ${Ports}
 
 client:
         #java -jar -Djava.rmi.server.hostname=127.0.1.1 Client/DijkstraClient.jar
-        java Client.Client ${Testcase} ${RegistryIP} ${Ports}
+        java Client.Client ${Testcase} ${hostIP} ${Ports}
 
 clean:
         @echo 'clearing files...'
