@@ -4,7 +4,7 @@ To compile by: `make` command.
 
 java -jar -Djava.rmi.server.hostname=127.0.1.1 Server/Server.jar
 
-java -jar -Djava.rmi.server.hostname=127.0.1.1 Client/DijkstraClient.jar
+java -jar -Djava.rmi.server.hostname=127.0.1.1 Client/Dijkstra.jar
 
 By .jar:
 

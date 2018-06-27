@@ -148,7 +148,7 @@ public class Dijkstra {
 
         System.out.println("The result of the dijkstr algorithm implementation:\n");
         System.out.println("Started from node index = " + initialNode);
-        System.out.print("\nDist = [");
+        System.out.print("\nDist (- means no path) = [");
         for(int node=0; node<nodesCount; ++node) {
             if (dist[node] == 9999)
                 System.out.print("-, ");
